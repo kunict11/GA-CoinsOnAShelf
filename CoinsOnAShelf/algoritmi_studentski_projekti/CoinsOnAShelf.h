@@ -1,0 +1,4 @@
+#ifndef COINSONASHELF_H
+#define COINSONASHELF_H
+
+#endif // COINSONASHELF_H
