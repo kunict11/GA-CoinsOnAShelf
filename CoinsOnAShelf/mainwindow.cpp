@@ -321,10 +321,10 @@ void MainWindow::napraviNoviAlgoritam()
         break;
     */
 
-//    case TipAlgoritma::COINS_ON_A_SHELF:
-//        _pAlgoritamBaza = new CoinsOnAShelf(_pOblastCrtanja, _duzinaPauze, _naivni,
-//                                            _imeDatoteke, _brojSlucajnihObjekata);
-//        break;
+    case TipAlgoritma::COINS_ON_A_SHELF:
+        _pAlgoritamBaza = new CoinsOnAShelf(_pOblastCrtanja, _duzinaPauze, _naivni,
+                                            _imeDatoteke, _brojSlucajnihObjekata);
+        break;
 
     default: /* ako nije algoritam uopste */
         break;

@@ -6,6 +6,11 @@ Disk::Disk(float radius) : _radius(radius)
     _isHidden = false;
 }
 
+const Disk& Disk::operator = (const Disk& other)
+{
+    return other;
+}
+
 bool Disk::operator < (const Disk& other)
 {
     return _size < other.getSize();
@@ -51,7 +56,7 @@ void Disk::setPosition(QPointF& position)
     _position = position;
 }
 
-bool Disk::isOvershadowedByOther(const Disk &other)
+bool Disk::isOvershadowedByOther(const Disk& other)
 {
     float g = (std::sqrt(2) - 1) * other.getSize();
 

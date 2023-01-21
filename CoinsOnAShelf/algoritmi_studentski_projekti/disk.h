@@ -13,14 +13,15 @@ public:
     QPointF& getPosition();
     bool getIsHidden() const;
 
-    void setPosition(QPointF& position);
-    void setIsHidden(bool isHidden);
+    void setPosition(QPointF&);
+    void setIsHidden(bool);
 
-    bool isOvershadowedByOther(const Disk &other);
+    bool isOvershadowedByOther(const Disk&);
 
-    bool operator > (const Disk& other);
-    bool operator < (const Disk& other);
-    bool operator == (const Disk& other);
+    const Disk& operator = (const Disk&);
+    bool operator > (const Disk&);
+    bool operator < (const Disk&);
+    bool operator == (const Disk&);
 
 private:
     float _radius;

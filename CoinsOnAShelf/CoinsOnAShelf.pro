@@ -23,6 +23,7 @@ SOURCES += \
     algoritmi_studentski_projekti/coinsonashelf.cpp \
     algoritmi_studentski_projekti/disk.cpp \
     algoritmi_studentski_projekti/ga06_presekPravougaonika.cpp \
+    algoritmi_studentski_projekti/gap.cpp \
     animacijanit.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -49,6 +50,7 @@ HEADERS += \
     algoritmi_studentski_projekti/coinsonashelf.h \
     algoritmi_studentski_projekti/disk.h \
     algoritmi_studentski_projekti/ga06_presekPravougaonika.h \
+    algoritmi_studentski_projekti/gap.h \
     animacijanit.h \
     config.h \
     mainwindow.h \

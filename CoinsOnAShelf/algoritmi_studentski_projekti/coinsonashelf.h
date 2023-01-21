@@ -7,6 +7,7 @@
 
 #include "algoritambaza.h"
 #include "disk.h"
+#include "gap.h"
 
 // define the maximimum and minimum value for disk radius
 #define MAX_RADIUS (256)
@@ -42,7 +43,7 @@ private:
     float gapSize(const Disk &disk1, const Disk &disk2);
     bool canDiskFitInGap(Disk &disk, float gapSize);
 
-    std::priority_queue<std::tuple<Disk, Disk, float>> _gapSizes;
+    std::priority_queue<Gap> _gapSizes;
 };
 
 #endif // COINSONASHELF_H

@@ -20,6 +20,8 @@
 //#include "./algoritmi_sa_vezbi/ga08_delaunay_triangulation.h"
 //#include "ga06_presekPravougaonika.h"
 
+#include "./algoritmi_studentski_projekti/coinsonashelf.h"
+
 /* Enumeracija algoritama */
 enum class TipAlgoritma {
     ALGORITMI_SA_VEZBI,

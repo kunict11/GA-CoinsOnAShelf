@@ -17,7 +17,9 @@ CoinsOnAShelf::CoinsOnAShelf(QWidget *pCrtanje,
         qDebug() << "First disk radius " << radiuses.at(0);
     }
 
-    std::transform(radiuses.begin(), radiuses.end(), _disks.begin(), [](double r) { return new Disk(r); });
+    for (float r : radiuses) {
+        _disks.push_back(Disk(r));
+    }
 
     qDebug() << "First disk size " << _disks.at(0).getSize();
 
@@ -38,22 +40,22 @@ void CoinsOnAShelf::pokreniAlgoritam()
 {
     std::sort(_disks.begin(), _disks.end(), std::greater<Disk&>());
 
-    const Disk &d1 = _disks.at(0);
-    const Disk &d2 = _disks.at(1);
-    _disks.pop_front();
-    _disks.pop_front();
+    Disk &d1 = _disks.at(0);
+    Disk &d2 = _disks.at(1);
     _ordering.push_back(d1);
     _ordering.push_back(d2);
-    _gapSizes.push(std::make_tuple(d1, d2, gapSize(d1, d2)));
+    _gapSizes.push(Gap(d1, d2));
+    _disks.pop_front();
+    _disks.pop_front();
 
     _spanLength = d1.getRadius() + footpointDistance(d1, d2) + d2.getRadius();
 
     for(auto& disk : _disks)
     {
         // the size of the current disk is larger than the largest gap
-        if (std::get<2>(_gapSizes.top()) < disk.getSize()) {
-            const Disk &d1 = _ordering.front();
-            const Disk &d2 = _ordering.back();
+        if (_gapSizes.top().getSize() < disk.getSize()) {
+            Disk &d1 = _ordering.front();
+            Disk &d2 = _ordering.back();
 
             float newSpanLengthLeft = _spanLength;
             bool placingLeftIncreasesSpanLength = false;
@@ -75,7 +77,7 @@ void CoinsOnAShelf::pokreniAlgoritam()
                    _spanLength = newSpanLengthLeft;
                    _ordering.push_front(disk);
                 }
-                _gapSizes.push(std::make_tuple(d1, disk, gapSize(d1, disk)));
+                _gapSizes.push(Gap(d1, disk));
             }
 
             else {
@@ -83,21 +85,32 @@ void CoinsOnAShelf::pokreniAlgoritam()
                     _spanLength = newSpanLengthRight;
                     _ordering.push_back(disk);
                 }
-                _gapSizes.push(std::make_tuple(disk, d2, gapSize(disk, d2)));
+                _gapSizes.push(Gap(disk, d2));
             }
         }
         else {
-            const auto& filledGapInfo = _gapSizes.top();
-            const Disk& leftDisk = std::get<0>(filledGapInfo);
-            const Disk& rightDisk = std::get<1>(filledGapInfo);
-            _gapSizes.push(std::make_tuple(leftDisk, disk, gapSize(leftDisk, disk)));
-            _gapSizes.push(std::make_tuple(disk, rightDisk, gapSize(rightDisk, disk)));
+            Disk& leftDisk = _gapSizes.top().getLeftDisk();
+            Disk& rightDisk = _gapSizes.top().getRightDisk();
+            _gapSizes.push(Gap(leftDisk, disk));
+            _gapSizes.push(Gap(disk, rightDisk));
+            _gapSizes.pop();
             // the span won't increase because the inserted disk is fully hidden between the two disks
             disk.setIsHidden(true);
         }
 
     }
+
+    qDebug() << _spanLength;
 }
+
+void CoinsOnAShelf::pokreniNaivniAlgoritam()
+{
+
+}
+
+void CoinsOnAShelf::crtajAlgoritam(QPainter*) const {}
+
+void CoinsOnAShelf::crtajNaivniAlgoritam(QPainter*) const {}
 
 float CoinsOnAShelf::gapSize(const Disk &d1, const Disk &d2)
 {

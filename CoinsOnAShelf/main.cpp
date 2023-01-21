@@ -3,23 +3,28 @@
 #include <QApplication>
 #include <GL/glut.h>
 #include <QLabel>
+#include "./algoritmi_studentski_projekti/coinsonashelf.h"
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+//    QApplication a(argc, argv);
 
-    QSurfaceFormat format;
-    format.setDepthBufferSize(24);
-    QSurfaceFormat::setDefaultFormat(format);
+//    QSurfaceFormat format;
+//    format.setDepthBufferSize(24);
+//    QSurfaceFormat::setDefaultFormat(format);
 
-#ifndef QT_NO_OPENGL
-    MainWindow w;
-    w.showMaximized();
-    w.show();
-#else
-    QLabel note("OpenGL Support required");
-    note.show();
-#endif
+//#ifndef QT_NO_OPENGL
+//    MainWindow w;
+//    w.showMaximized();
+//    w.show();
+//#else
+//    QLabel note("OpenGL Support required");
+//    note.show();
+//#endif
 
-    return a.exec();
+    CoinsOnAShelf* coas = new CoinsOnAShelf(nullptr, 10);
+    coas->pokreniAlgoritam();
+
+//    return a.exec();
+    return 0;
 }
