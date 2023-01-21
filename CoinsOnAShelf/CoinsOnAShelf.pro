@@ -20,6 +20,8 @@ SOURCES += \
 #    algoritmi_sa_vezbi/ga06_dceldemo.cpp \
 #    algoritmi_sa_vezbi/ga07_triangulation.cpp \
 #    algoritmi_sa_vezbi/ga08_delaunay_trinagulation.cpp \
+    algoritmi_studentski_projekti/coinsonashelf.cpp \
+    algoritmi_studentski_projekti/disk.cpp \
     algoritmi_studentski_projekti/ga06_presekPravougaonika.cpp \
     animacijanit.cpp \
     main.cpp \
@@ -44,7 +46,8 @@ HEADERS += \
 #    algoritmi_sa_vezbi/ga07_datastructures.h \
 #    algoritmi_sa_vezbi/ga07_triangulation.h \
 #    algoritmi_sa_vezbi/ga08_delaunay_triangulation.h \
-    algoritmi_studentski_projekti/CoinsOnAShelf.h \
+    algoritmi_studentski_projekti/coinsonashelf.h \
+    algoritmi_studentski_projekti/disk.h \
     algoritmi_studentski_projekti/ga06_presekPravougaonika.h \
     animacijanit.h \
     config.h \
