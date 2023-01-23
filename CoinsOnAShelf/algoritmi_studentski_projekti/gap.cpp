@@ -6,9 +6,6 @@ Gap::Gap(Disk& d1, Disk& d2)
     _size = calculateSize();
 }
 
-Gap::Gap(const Gap &g)
-    : _leftDisk(g.getLeftDisk()), _rightDisk(g.getRightDisk()), _size(g.getSize()) {}
-
 Disk& Gap::getLeftDisk() const
 {
     return _leftDisk;
@@ -19,9 +16,13 @@ Disk& Gap::getRightDisk() const
     return _rightDisk;
 }
 
-Gap &Gap::operator = (const Gap &other)
+Gap& Gap::operator = (const Gap &other)
 {
-    return *(new Gap(other));
+    _leftDisk = other._leftDisk;
+    _rightDisk = other._rightDisk;
+    _size = other._size;
+
+    return *this;
 }
 
 bool operator < (const Gap &g1, const Gap &g2)

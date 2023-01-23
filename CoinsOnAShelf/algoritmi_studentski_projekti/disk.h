@@ -18,10 +18,11 @@ public:
 
     bool isOvershadowedByOther(const Disk&);
 
-    const Disk& operator = (const Disk&);
-    bool operator > (const Disk&);
-    bool operator < (const Disk&);
-    bool operator == (const Disk&);
+    Disk& operator = (const Disk&);
+    friend bool operator > (const Disk &d1, const Disk &d2);
+    friend bool operator >= (const Disk &d1, const Disk &d2);
+    friend bool operator < (const Disk &d1, const Disk &d2);
+    friend bool operator == (const Disk &d1, const Disk &d2);
 
 private:
     float _radius;

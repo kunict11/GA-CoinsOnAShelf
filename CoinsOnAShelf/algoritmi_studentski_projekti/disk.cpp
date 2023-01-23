@@ -6,24 +6,34 @@ Disk::Disk(float radius) : _radius(radius)
     _isHidden = false;
 }
 
-const Disk& Disk::operator = (const Disk& other)
+Disk& Disk::operator = (const Disk& other)
 {
-    return other;
+    _radius = other._radius;
+    _size = other._size;
+    _isHidden = other._isHidden;
+    _position = other._position;
+
+    return *this;
 }
 
-bool Disk::operator < (const Disk& other)
+bool operator < (const Disk &d1, const Disk &d2)
 {
-    return _size < other.getSize();
+    return d1._size < d2._size;
 }
 
-bool Disk::operator > (const Disk& other)
+bool operator > (const Disk &d1, const Disk &d2)
 {
-    return _size > other.getSize();
+    return d1._size > d2._size;
 }
 
-bool Disk::operator == (const Disk& other)
+bool operator >= (const Disk &d1, const Disk &d2)
 {
-    return _size == other.getSize();
+    return d1._size >= d2._size;
+}
+
+bool operator == (const Disk &d1, const Disk &d2)
+{
+    return d1._size == d2._size;
 }
 
 float Disk::getRadius() const

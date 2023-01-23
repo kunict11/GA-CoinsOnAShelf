@@ -9,10 +9,6 @@
 #include "disk.h"
 #include "gap.h"
 
-// define the maximimum and minimum value for disk radius
-#define MAX_RADIUS (256)
-#define MIN_RADIUS (1)
-
 class CoinsOnAShelf : public AlgoritamBaza
 {
 public:
@@ -21,6 +17,10 @@ public:
                   const bool &naivni = false,
                   std::string imeDatoteke = "",
                   int brojTacaka = BROJ_SLUCAJNIH_OBJEKATA);
+
+    // define the maximimum and minimum value for disk radius
+    constexpr static float MAX_RADIUS = 64.0;
+    constexpr static float MIN_RADIUS = 0.4;
 
     void pokreniAlgoritam();
     void crtajAlgoritam(QPainter *painter) const;
@@ -34,10 +34,12 @@ public:
 private:
     std::deque<float> generateRandomRadiuses(int numDisks) const;
     std::deque<Disk> _disks;
+    std::deque<Disk> _disksNaive;
 
     std::deque<Disk> _ordering;
     int _orderingSize;
     float _spanLength;
+    float _spanLengthNaive;
 
     float footpointDistance(const Disk &disk1, const Disk &disk2);
     float gapSize(const Disk &disk1, const Disk &disk2);

@@ -1,6 +1,7 @@
 #include "coinsonashelf.h"
 
 #include <algorithm>
+#include <random>
 #include <QDebug>
 
 CoinsOnAShelf::CoinsOnAShelf(QWidget *pCrtanje,
@@ -13,32 +14,27 @@ CoinsOnAShelf::CoinsOnAShelf(QWidget *pCrtanje,
     std::deque<float> radiuses;
 
     if (imeDatoteke == "") {
-        radiuses = generateRandomRadiuses(brojTacaka);
+        radiuses = generateRandomRadiuses(12);
         qDebug() << "First disk radius " << radiuses.at(0);
+
     }
 
     for (float r : radiuses) {
         _disks.push_back(Disk(r));
+        _disksNaive.push_back(Disk(r));
     }
 
     qDebug() << "First disk size " << _disks.at(0).getSize();
 
 }
 
-std::deque<float> CoinsOnAShelf::generateRandomRadiuses(int numDisks) const
-{
-    std::deque<float> radiuses;
-    for (int i=0; i<numDisks; ++i) {
-        float r = (rand() / (float)RAND_MAX) * (MAX_RADIUS - MIN_RADIUS) + MIN_RADIUS;
-        radiuses.push_back(r);
-    }
-
-    return radiuses;
-}
-
 void CoinsOnAShelf::pokreniAlgoritam()
 {
-    std::sort(_disks.begin(), _disks.end(), std::greater<Disk&>());
+    std::sort(std::begin(_disks), std::end(_disks), std::greater_equal<Disk>());
+    _spanLength = 0;
+
+    qDebug() << "Largest disk size " << _disks.front().getSize();
+    qDebug() << "Num disks " << _disks.size();
 
     Disk &d1 = _disks.at(0);
     Disk &d2 = _disks.at(1);
@@ -106,11 +102,51 @@ void CoinsOnAShelf::pokreniAlgoritam()
 void CoinsOnAShelf::pokreniNaivniAlgoritam()
 {
 
+    std::sort(std::begin(_disksNaive), std::end(_disksNaive), std::less<Disk>());
+
+    qDebug() << "Largest disk size " << _disksNaive.front().getSize();
+    qDebug() << "Num disks " << _disksNaive.size();
+
+    int n = _disksNaive.size();
+    float currentMin = (float)INT_MAX;
+
+    do {
+        float currentResult = _disksNaive.front().getRadius() + _disksNaive.back().getRadius();
+
+        for (int i=0; i<n-1; ++i) {
+            currentResult += footpointDistance(_disksNaive.at(i), _disksNaive.at(i+1));
+        }
+
+        if(currentResult < currentMin)
+            currentMin = currentResult;
+
+    } while(std::next_permutation(std::begin(_disksNaive), std::end(_disksNaive)));
+
+    _spanLengthNaive = currentMin;
+    qDebug() << "Min result: " << _spanLengthNaive;
 }
 
 void CoinsOnAShelf::crtajAlgoritam(QPainter*) const {}
 
 void CoinsOnAShelf::crtajNaivniAlgoritam(QPainter*) const {}
+
+
+std::deque<float> CoinsOnAShelf::generateRandomRadiuses(int numDisks) const
+{
+    std::deque<float> radiuses;
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dis(MIN_RADIUS, MAX_RADIUS);
+
+    for (int i=0; i<numDisks; ++i) {
+//        float r = (float)rand() * (MAX_RADIUS - MIN_RADIUS) / (float)RAND_MAX + MIN_RADIUS;
+        float r = dis(gen);
+        qDebug() << "Random no" << i << ": " << r;
+        radiuses.push_back(r);
+    }
+
+    return radiuses;
+}
 
 float CoinsOnAShelf::gapSize(const Disk &d1, const Disk &d2)
 {

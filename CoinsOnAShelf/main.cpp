@@ -24,6 +24,7 @@ int main(int argc, char *argv[])
 
     CoinsOnAShelf* coas = new CoinsOnAShelf(nullptr, 10);
     coas->pokreniAlgoritam();
+    coas->pokreniNaivniAlgoritam();
 
 //    return a.exec();
     return 0;
