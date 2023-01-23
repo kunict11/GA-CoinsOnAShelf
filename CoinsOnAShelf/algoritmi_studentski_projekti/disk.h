@@ -6,14 +6,16 @@
 class Disk
 {
 public:
-    Disk(float radius);
+    Disk(float radius, float posX = 0.0, float posY = 0.0);
 
     float getRadius() const;
     float getSize() const;
-    QPointF& getPosition();
+    float getPosX() const;
+    float getPosY() const;
     bool getIsHidden() const;
 
-    void setPosition(QPointF&);
+    void setPosX(float x);
+    void setPosY(float y);
     void setIsHidden(bool);
 
     bool isOvershadowedByOther(const Disk&);
@@ -27,7 +29,8 @@ public:
 private:
     float _radius;
     float _size;
-    QPointF _position;
+    float _posX;
+    float _posY;
 
     // indicates if the disk is fully in a gap between other disks
     bool _isHidden;

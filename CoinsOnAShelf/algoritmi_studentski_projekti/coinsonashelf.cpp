@@ -14,7 +14,7 @@ CoinsOnAShelf::CoinsOnAShelf(QWidget *pCrtanje,
     std::deque<float> radiuses;
 
     if (imeDatoteke == "") {
-        radiuses = generateRandomRadiuses(12);
+        radiuses = generateRandomRadiuses(brojTacaka);
         qDebug() << "First disk radius " << radiuses.at(0);
 
     }
@@ -24,6 +24,8 @@ CoinsOnAShelf::CoinsOnAShelf(QWidget *pCrtanje,
         _disksNaive.push_back(Disk(r));
     }
 
+    calculatePositions();
+
     qDebug() << "First disk size " << _disks.at(0).getSize();
 
 }
@@ -31,6 +33,8 @@ CoinsOnAShelf::CoinsOnAShelf(QWidget *pCrtanje,
 void CoinsOnAShelf::pokreniAlgoritam()
 {
     std::sort(std::begin(_disks), std::end(_disks), std::greater_equal<Disk>());
+    calculatePositions();
+    updateCanvasAndBlock();
     _spanLength = 0;
 
     qDebug() << "Largest disk size " << _disks.front().getSize();
@@ -126,7 +130,26 @@ void CoinsOnAShelf::pokreniNaivniAlgoritam()
     qDebug() << "Min result: " << _spanLengthNaive;
 }
 
-void CoinsOnAShelf::crtajAlgoritam(QPainter*) const {}
+void CoinsOnAShelf::crtajAlgoritam(QPainter *painter) const
+{
+    if(!painter)
+        return;
+
+    auto pen = painter->pen();
+    pen.setColor(Qt::blue);
+    painter->setPen(pen);
+
+    painter->fillRect(10, 50, _pCrtanje->width()-20, 10, Qt::blue);
+
+
+
+    for(const auto &disk : _disks) {
+        painter->drawEllipse(QPointF(disk.getPosX(), disk.getPosY()), disk.getRadius(), disk.getRadius());
+    }
+
+
+
+}
 
 void CoinsOnAShelf::crtajNaivniAlgoritam(QPainter*) const {}
 
@@ -139,13 +162,43 @@ std::deque<float> CoinsOnAShelf::generateRandomRadiuses(int numDisks) const
     std::uniform_real_distribution<> dis(MIN_RADIUS, MAX_RADIUS);
 
     for (int i=0; i<numDisks; ++i) {
-//        float r = (float)rand() * (MAX_RADIUS - MIN_RADIUS) / (float)RAND_MAX + MIN_RADIUS;
         float r = dis(gen);
         qDebug() << "Random no" << i << ": " << r;
         radiuses.push_back(r);
     }
 
     return radiuses;
+}
+
+void CoinsOnAShelf::calculatePositions()
+{
+    int canvasWidth = _pCrtanje->width();
+    int canvasHeight = _pCrtanje->height();
+
+    qDebug() << "Width: " << canvasWidth << " Height: " << canvasHeight;
+
+    float currentX = 10.0;
+    float currentY = canvasHeight - 10.0;
+    float currentMaxRadius = 0.0;
+
+    for(auto &disk : _disks)
+    {
+        if (currentX + 2*disk.getRadius() > canvasWidth) {
+            currentY -= 2*currentMaxRadius + 10.0;
+            currentX = 10.0;
+        }
+
+        currentX += disk.getRadius();
+        disk.setPosX(currentX);
+        disk.setPosY(currentY - disk.getRadius());
+
+        qDebug() << "Radius: " << disk.getRadius() << " x: " << disk.getPosX() << " y: " << disk.getPosY();
+
+        if (disk.getRadius() > currentMaxRadius)
+            currentMaxRadius = disk.getRadius();
+
+        currentX += disk.getRadius();
+    }
 }
 
 float CoinsOnAShelf::gapSize(const Disk &d1, const Disk &d2)

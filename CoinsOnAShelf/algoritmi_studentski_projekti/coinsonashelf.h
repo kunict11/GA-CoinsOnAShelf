@@ -19,8 +19,8 @@ public:
                   int brojTacaka = BROJ_SLUCAJNIH_OBJEKATA);
 
     // define the maximimum and minimum value for disk radius
-    constexpr static float MAX_RADIUS = 64.0;
-    constexpr static float MIN_RADIUS = 0.4;
+    constexpr static float MAX_RADIUS = 81.0;
+    constexpr static float MIN_RADIUS = 1;
 
     void pokreniAlgoritam();
     void crtajAlgoritam(QPainter *painter) const;
@@ -44,6 +44,7 @@ private:
     float footpointDistance(const Disk &disk1, const Disk &disk2);
     float gapSize(const Disk &disk1, const Disk &disk2);
     bool canDiskFitInGap(Disk &disk, float gapSize);
+    void calculatePositions();
 
     std::priority_queue<Gap> _gapSizes;
 };
