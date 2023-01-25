@@ -1,7 +1,7 @@
 #include "disk.h"
 
-Disk::Disk(float radius, float posX, float posY)
-    : _radius(radius), _posX(posX), _posY(posY)
+Disk::Disk(float radius, int id, float posX, float posY)
+    : _radius(radius), _id(id), _posX(posX), _posY(posY)
 {
     _size = std::sqrt(radius);
     _isHidden = false;
@@ -63,6 +63,11 @@ bool Disk::getIsHidden() const
     return _isHidden;
 }
 
+int Disk::getId() const
+{
+    return _id;
+}
+
 void Disk::setIsHidden(bool isHidden)
 {
     _isHidden = isHidden;
@@ -76,6 +81,11 @@ void Disk::setPosX(float posX)
 void Disk::setPosY(float posY)
 {
     _posY = posY;
+}
+
+void Disk::setId(int id)
+{
+    _id = id;
 }
 
 bool Disk::isOvershadowedByOther(const Disk& other)

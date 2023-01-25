@@ -6,17 +6,19 @@
 class Disk
 {
 public:
-    Disk(float radius, float posX = 0.0, float posY = 0.0);
+    Disk(float radius, int id, float posX = 0.0, float posY = 0.0);
 
     float getRadius() const;
     float getSize() const;
     float getPosX() const;
     float getPosY() const;
     bool getIsHidden() const;
+    int getId() const;
 
     void setPosX(float x);
     void setPosY(float y);
     void setIsHidden(bool);
+    void setId(int id);
 
     bool isOvershadowedByOther(const Disk&);
 
@@ -28,6 +30,7 @@ public:
 
 private:
     float _radius;
+    int _id;
     float _size;
     float _posX;
     float _posY;

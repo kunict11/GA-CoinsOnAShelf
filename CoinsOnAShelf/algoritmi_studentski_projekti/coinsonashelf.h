@@ -32,6 +32,12 @@ public:
     float getSpanLength() const;
 
 private:
+    enum NeighbourSide
+    {
+        LEFT,
+        RIGHT
+    };
+
     std::deque<float> generateRandomRadiuses(int numDisks) const;
     std::deque<Disk> _disks;
     std::deque<Disk> _disksNaive;
@@ -44,9 +50,15 @@ private:
     float footpointDistance(const Disk &disk1, const Disk &disk2);
     float gapSize(const Disk &disk1, const Disk &disk2);
     bool canDiskFitInGap(Disk &disk, float gapSize);
+    void reasignIds();
     void calculatePositions();
+    void placeOnShelf(Disk &disk, Disk &neighbour, NeighbourSide n);
 
     std::priority_queue<Gap> _gapSizes;
+
+    constexpr static int SHELF_X = 10;
+    constexpr static int SHELF_Y = 50;
+    constexpr static int SHELF_HEIGHT = 10;
 };
 
 #endif // COINSONASHELF_H
