@@ -7,6 +7,10 @@ Disk::Disk(float radius, int id, float posX, float posY)
     _isHidden = false;
 }
 
+Disk::Disk(const Disk& d)
+    : _radius(d._radius), _id(d._id), _size(d._size), _posX(d._posX), _posY(d._posY), _isHidden(d._isHidden)
+{ }
+
 Disk& Disk::operator = (const Disk& other)
 {
     _radius = other._radius;

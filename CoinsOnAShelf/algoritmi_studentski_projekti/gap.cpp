@@ -1,17 +1,17 @@
 #include "gap.h"
 
-Gap::Gap(Disk& d1, Disk& d2)
+Gap::Gap(Disk *d1, Disk *d2)
     : _leftDisk(d1), _rightDisk(d2)
 {
     _size = calculateSize();
 }
 
-Disk& Gap::getLeftDisk() const
+Disk* Gap::getLeftDisk() const
 {
     return _leftDisk;
 }
 
-Disk& Gap::getRightDisk() const
+Disk* Gap::getRightDisk() const
 {
     return _rightDisk;
 }
@@ -47,7 +47,7 @@ float Gap::getSize() const
 
 float Gap::calculateSize()
 {
-    float tmp = 1/_leftDisk.getSize() + 1/_rightDisk.getSize();
+    float tmp = 1/_leftDisk->getSize() + 1/_rightDisk->getSize();
 
     return 1/tmp;
 }

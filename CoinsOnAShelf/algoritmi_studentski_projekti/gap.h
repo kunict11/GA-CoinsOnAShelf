@@ -5,11 +5,11 @@
 class Gap
 {
 public:
-    Gap(Disk& leftDisk, Disk& rightDisk);
+    Gap(Disk *leftDisk, Disk *rightDisk);
     ~Gap() = default;
 
-    Disk& getLeftDisk() const;
-    Disk& getRightDisk() const;
+    Disk* getLeftDisk() const;
+    Disk* getRightDisk() const;
     float getSize() const;
 
     Gap& operator = (const Gap &other);
@@ -18,8 +18,8 @@ public:
     friend bool operator == (const Gap &g1, const Gap &g2);
 
 private:
-    Disk& _leftDisk;
-    Disk& _rightDisk;
+    Disk* _leftDisk;
+    Disk* _rightDisk;
     float _size;
 
     float calculateSize();

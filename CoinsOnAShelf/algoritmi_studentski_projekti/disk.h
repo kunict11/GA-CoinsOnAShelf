@@ -7,6 +7,8 @@ class Disk
 {
 public:
     Disk(float radius, int id, float posX = 0.0, float posY = 0.0);
+    Disk(const Disk& d);
+    ~Disk() = default;
 
     float getRadius() const;
     float getSize() const;

@@ -48,7 +48,8 @@ void CoinsOnAShelf::pokreniAlgoritam()
     _ordering.push_back(d1);
     _ordering.push_back(d2);
 
-    _gapSizes.push(Gap(d1, d2));
+    Gap g = Gap(new Disk(d1), new Disk(d2));
+    _gapSizes.push(g);
 
     updateCanvasAndBlock();
 
@@ -56,8 +57,6 @@ void CoinsOnAShelf::pokreniAlgoritam()
 
     for(auto& disk : _disks)
     {
-
-        qDebug() << "Now working on disk" << disk.getId();
 
         if(disk.getId() == 0 || disk.getId() == 1)
             continue;
@@ -89,7 +88,9 @@ void CoinsOnAShelf::pokreniAlgoritam()
                    _spanLength = newSpanLengthLeft;
                    _ordering.push_front(disk);
                 }
-                _gapSizes.push(Gap{disk, d1});
+
+                Gap g = Gap(new Disk(disk), new Disk(d1));
+                _gapSizes.push(g);
                 updateCanvasAndBlock();
             }
 
@@ -101,19 +102,27 @@ void CoinsOnAShelf::pokreniAlgoritam()
                     _spanLength = newSpanLengthRight;
                     _ordering.push_back(disk);
                 }
-                _gapSizes.push(Gap{d2, disk});
+
+                Gap g = Gap(new Disk(d2), new Disk(disk));
+                _gapSizes.push(g);
                 updateCanvasAndBlock();
             }
         }
         else {
-            Disk& leftDisk = _gapSizes.top().getLeftDisk();
-            Disk& rightDisk = _gapSizes.top().getRightDisk();
-            _gapSizes.push(Gap{leftDisk, disk});
-            _gapSizes.push(Gap{disk, rightDisk});
+            const auto &top = _gapSizes.top();
+            Disk* leftDisk = top.getLeftDisk();
+            Disk* rightDisk = top.getRightDisk();
+            disk.setIsHidden(true);
+
+            placeOnShelf(disk, *leftDisk, NeighbourSide::LEFT);
+            Gap g1 = Gap(leftDisk, new Disk(disk));
+            Gap g2 = Gap(new Disk(disk), rightDisk);
+            _gapSizes.push(g1);
+            _gapSizes.push(g2);
             _gapSizes.pop();
+
             // the span won't increase because the inserted disk is fully hidden between the two disks
             disk.setIsHidden(true);
-            placeOnShelf(disk, leftDisk, NeighbourSide::LEFT);
             updateCanvasAndBlock();
         }
     }
@@ -178,7 +187,6 @@ std::deque<float> CoinsOnAShelf::generateRandomRadiuses(int numDisks) const
 
     for (int i=0; i<numDisks; ++i) {
         float r = dis(gen);
-        qDebug() << "Random no" << i << ": " << r;
         radiuses.push_back(r);
     }
 
@@ -216,14 +224,10 @@ void CoinsOnAShelf::placeOnShelf(Disk &disk, Disk &neighbour, NeighbourSide ns)
 {
     if (ns == NeighbourSide::LEFT)
         disk.setPosX(neighbour.getPosX() + footpointDistance(neighbour, disk));
-    else{
+    else
         disk.setPosX(neighbour.getPosX() - footpointDistance(disk, neighbour));
-        disk.setId(999);
-    }
 
     disk.setPosY(SHELF_Y + SHELF_HEIGHT + disk.getRadius());
-    qDebug() << "Disk with id " << disk.getId() << " x: " << disk.getPosX();
-    qDebug() << "Neighbour " << neighbour.getId() << " " << neighbour.getPosX();
 
 }
 
