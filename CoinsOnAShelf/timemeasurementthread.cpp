@@ -13,6 +13,8 @@
 //#include "./algoritmi_sa_vezbi/ga05_preseciduzi.h"
 //#include "./algoritmi_sa_vezbi/ga08_delaunay_triangulation.h"
 
+#include "./algoritmi_studentski_projekti/coinsonashelf.h"
+
 //#include "ga06_presekPravougaonika.h"
 
 TimeMeasurementThread::TimeMeasurementThread(TipAlgoritma tipAlgoritma, int minValue, int step, int maxValue)
@@ -64,6 +66,9 @@ void TimeMeasurementThread::run()
        /* case TipAlgoritma::PRESEK_PRAVOUGAONIKA:
             pAlgorithm = new PresekPravougaonika(nullptr, 0, false, "", i);
             break;*/
+        case TipAlgoritma::COINS_ON_A_SHELF:
+            pAlgorithm = new CoinsOnAShelf(nullptr, 0, false, "", i);
+            break;
         default:
             break;
         }
@@ -87,7 +92,6 @@ void TimeMeasurementThread::run()
 #else
             naiveTime = 0;
 #endif
-            // std::cout << "Zavrsio oba poziva, stigao do crtanja" << std::endl;
             emit updateChart(i, optimalTime, naiveTime);
             delete pAlgorithm;
             pAlgorithm = nullptr;

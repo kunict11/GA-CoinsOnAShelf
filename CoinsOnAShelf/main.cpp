@@ -22,10 +22,6 @@ int main(int argc, char *argv[])
     note.show();
 #endif
 
-//    CoinsOnAShelf* coas = new CoinsOnAShelf(nullptr, 10);
-//    coas->pokreniAlgoritam();
-//    coas->pokreniNaivniAlgoritam();
-
     return a.exec();
     return 0;
 }

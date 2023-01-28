@@ -3,6 +3,7 @@
 
 #include <QFileDialog>
 #include <QTextStream>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -48,8 +49,8 @@ MainWindow::MainWindow(QWidget *parent)
     chart->createDefaultAxes();
     chart->setTitle("Poredjenje efikasnosti");
 
-    chart->axes(Qt::Horizontal).back()->setRange(0, X_MAX_VAL);
-    chart->axes(Qt::Vertical).back()->setRange(0, Y_MAX_VAL);
+    chart->axes(Qt::Horizontal).back()->setRange(0, 10);
+    chart->axes(Qt::Vertical).back()->setRange(0, 0.0005);
 
     // Same formatting
     chart->setBackgroundVisible(false);
@@ -236,13 +237,13 @@ void MainWindow::on_tipAlgoritma_currentIndexChanged(int index)
 void MainWindow::on_merenjeButton_clicked()
 {
     ui->merenjeButton->setEnabled(false);
-    _optimalSeries->clear();
-    _naiveSeries->clear();
+//    _optimalSeries->clear();
+//    _naiveSeries->clear();
 
     ui->tabWidget->setCurrentIndex(TabIndex::POREDJENJE);
     TipAlgoritma tipAlgoritma = static_cast<TipAlgoritma>(ui->tipAlgoritma->currentIndex());
 
-    _mThread = new TimeMeasurementThread(tipAlgoritma, MIN_DIM, STEP, MAX_DIM);
+    _mThread = new TimeMeasurementThread(tipAlgoritma, MIN_DIM, 1, 10);
     connect(_mThread, &TimeMeasurementThread::updateChart, this, &MainWindow::on_lineSeriesChange);
     connect(_mThread, &TimeMeasurementThread::finishChart, this, &MainWindow::on_chartFinished);
     _mThread->start();
@@ -261,6 +262,25 @@ void MainWindow::on_chartFinished()
 
 void MainWindow::na_krajuAnimacije()
 {
+    TipAlgoritma tipAlgoritma = static_cast<TipAlgoritma>(ui->tipAlgoritma->currentIndex());
+
+    if(tipAlgoritma == TipAlgoritma::COINS_ON_A_SHELF) {
+        QMessageBox msgBox;
+        QString str("Found optimal solution: ");
+
+        float result;
+        if (_naivni)
+            result = static_cast<CoinsOnAShelf*>(_pAlgoritamBaza)->getSpanLengthNaive();
+        else
+            result = static_cast<CoinsOnAShelf*>(_pAlgoritamBaza)->getSpanLength();
+
+        str.append(QString::number(result));
+        msgBox.setText(str);
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        msgBox.exec();
+    }
+
     animacijaParametriButtonAktivni(true);
     on_tipAlgoritma_currentIndexChanged(ui->tipAlgoritma->currentIndex());
     ui->Ispocetka_dugme->setEnabled(true);

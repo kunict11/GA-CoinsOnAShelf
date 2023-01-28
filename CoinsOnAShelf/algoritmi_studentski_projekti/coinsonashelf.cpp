@@ -34,9 +34,10 @@ CoinsOnAShelf::CoinsOnAShelf(QWidget *pCrtanje,
         _disksNaive.push_back(Disk{r, i});
         i+=1;
     }
-
+#ifndef COINS_ON_A_SHELF_BENCHMARK
     calculatePositions(_disks);
     calculatePositions(_disksNaive);
+#endif
 
 
 }
@@ -44,21 +45,24 @@ CoinsOnAShelf::CoinsOnAShelf(QWidget *pCrtanje,
 void CoinsOnAShelf::pokreniAlgoritam()
 {
     std::sort(std::begin(_disks), std::end(_disks), std::greater_equal<Disk>());
+
+#ifndef COINS_ON_A_SHELF_BENCHMARK
     calculatePositions(_disks);
     reasignIds();
     updateCanvasAndBlock();
+#endif
     _spanLength = 0;
 
     Disk &d1 = _disks.at(0);
     Disk &d2 = _disks.at(1);
-
+#ifndef COINS_ON_A_SHELF_BENCHMARK
     d1.setPosX(_pCrtanje->width() / 2.0);
     d1.setPosY(SHELF_Y + SHELF_HEIGHT + d1.getRadius());
     updateCanvasAndBlock();
 
     placeOnShelf(d2, d1, NeighbourSide::LEFT);
     updateCanvasAndBlock();
-
+#endif
     _ordering.push_back(d1);
     _ordering.push_back(d2);
 
@@ -94,8 +98,9 @@ void CoinsOnAShelf::pokreniAlgoritam()
 
             if (newSpanLengthLeft < newSpanLengthRight) {
 
+#ifndef COINS_ON_A_SHELF_BENCHMARK
                 placeOnShelf(disk, d1, NeighbourSide::RIGHT);
-
+#endif
                 if(placingLeftIncreasesSpanLength) {
                    _spanLength = newSpanLengthLeft;
                    _ordering.push_front(disk);
@@ -103,12 +108,15 @@ void CoinsOnAShelf::pokreniAlgoritam()
 
                 Gap g = Gap(new Disk(disk), new Disk(d1));
                 _gapSizes.push(g);
+#ifndef COINS_ON_A_SHELF_BENCHMARK
                 updateCanvasAndBlock();
+#endif
             }
 
             else {
-
+#ifndef COINS_ON_A_SHELF_BENCHMARK
                 placeOnShelf(disk, d2, NeighbourSide::LEFT);
+#endif
 
                 if (placingRightIncreasesSpanLength) {
                     _spanLength = newSpanLengthRight;
@@ -117,7 +125,9 @@ void CoinsOnAShelf::pokreniAlgoritam()
 
                 Gap g = Gap(new Disk(d2), new Disk(disk));
                 _gapSizes.push(g);
+#ifndef COINS_ON_A_SHELF_BENCHMARK
                 updateCanvasAndBlock();
+#endif
             }
         }
         else {
@@ -125,8 +135,9 @@ void CoinsOnAShelf::pokreniAlgoritam()
             Disk* leftDisk = top.getLeftDisk();
             Disk* rightDisk = top.getRightDisk();
             disk.setIsHidden(true);
-
+#ifndef COINS_ON_A_SHELF_BENCHMARK
             placeOnShelf(disk, *leftDisk, NeighbourSide::LEFT);
+#endif
             Gap g1 = Gap(leftDisk, new Disk(disk));
             Gap g2 = Gap(new Disk(disk), rightDisk);
             _gapSizes.push(g1);
@@ -135,17 +146,25 @@ void CoinsOnAShelf::pokreniAlgoritam()
 
             // the span won't increase because the inserted disk is fully hidden between the two disks
             disk.setIsHidden(true);
+
+#ifndef COINS_ON_A_SHELF_BENCHMARK
             updateCanvasAndBlock();
+#endif
         }
     }
+#ifndef COINS_ON_A_SHELF_BENCHMARK
+    emit animacijaZavrsila();
+#endif
 }
 
 void CoinsOnAShelf::pokreniNaivniAlgoritam()
 {
 
     std::sort(std::begin(_disksNaive), std::end(_disksNaive), std::less<Disk>());
+#ifndef COINS_ON_A_SHELF_BENCHMARK
     calculatePositions(_disksNaive);
     updateCanvasAndBlock();
+#endif
 
     int n = _disksNaive.size();
     _spanLengthNaive = (float)INT_MAX;
@@ -153,8 +172,10 @@ void CoinsOnAShelf::pokreniNaivniAlgoritam()
     do {
         float currentResult = _disksNaive.front().getRadius() + _disksNaive.back().getRadius();
 
+#ifndef COINS_ON_A_SHELF_BENCHMARK
         organizeOnShelfNaive();
         updateCanvasAndBlock();
+#endif
 
         for (int i=0; i<n-1; ++i) {
             currentResult += footpointDistance(_disksNaive.at(i), _disksNaive.at(i+1));
@@ -168,7 +189,11 @@ void CoinsOnAShelf::pokreniNaivniAlgoritam()
     } while(std::next_permutation(std::begin(_disksNaive), std::end(_disksNaive)));
 
     _disksNaive = _orderingNaive;
+
+#ifndef COINS_ON_A_SHELF_BENCHMARK
     updateCanvasAndBlock();
+    emit animacijaZavrsila();
+#endif
 }
 
 void CoinsOnAShelf::crtajAlgoritam(QPainter *painter) const
@@ -334,4 +359,14 @@ void CoinsOnAShelf::reasignIds()
         disk.setId(i);
         ++i;
     }
+}
+
+float CoinsOnAShelf::getSpanLength() const
+{
+    return _spanLength;
+}
+
+float CoinsOnAShelf::getSpanLengthNaive() const
+{
+    return _spanLengthNaive;
 }

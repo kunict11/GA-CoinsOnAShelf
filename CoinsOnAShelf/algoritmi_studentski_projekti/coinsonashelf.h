@@ -9,6 +9,8 @@
 #include "disk.h"
 #include "gap.h"
 
+#define COINS_ON_A_SHELF_BENCHMARK
+
 class CoinsOnAShelf : public AlgoritamBaza
 {
 public:
@@ -30,6 +32,7 @@ public:
     std::vector<Disk>& getOrdering() const;
     int getOrderingSize() const;
     float getSpanLength() const;
+    float getSpanLengthNaive() const;
 
 private:
     enum NeighbourSide
