@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <random>
 #include <QDebug>
+#include <fstream>
 
 CoinsOnAShelf::CoinsOnAShelf(QWidget *pCrtanje,
                              int pauzaKoraka,
@@ -17,6 +18,15 @@ CoinsOnAShelf::CoinsOnAShelf(QWidget *pCrtanje,
         radiuses = generateRandomRadiuses(brojTacaka);
 
     }
+    else {
+
+        std::ifstream datoteka(imeDatoteke);
+
+        float r;
+        while(datoteka >> r) {
+            radiuses.push_back(r);
+        }
+    }
 
     int i = 0;
     for (float r : radiuses) {
@@ -25,7 +35,8 @@ CoinsOnAShelf::CoinsOnAShelf(QWidget *pCrtanje,
         i+=1;
     }
 
-    calculatePositions();
+    calculatePositions(_disks);
+    calculatePositions(_disksNaive);
 
 
 }
@@ -33,7 +44,7 @@ CoinsOnAShelf::CoinsOnAShelf(QWidget *pCrtanje,
 void CoinsOnAShelf::pokreniAlgoritam()
 {
     std::sort(std::begin(_disks), std::end(_disks), std::greater_equal<Disk>());
-    calculatePositions();
+    calculatePositions(_disks);
     reasignIds();
     updateCanvasAndBlock();
     _spanLength = 0;
@@ -41,17 +52,18 @@ void CoinsOnAShelf::pokreniAlgoritam()
     Disk &d1 = _disks.at(0);
     Disk &d2 = _disks.at(1);
 
-    d1.setPosX((SHELF_X + _pCrtanje->width() - 20) / 2.0);
+    d1.setPosX(_pCrtanje->width() / 2.0);
     d1.setPosY(SHELF_Y + SHELF_HEIGHT + d1.getRadius());
+    updateCanvasAndBlock();
+
     placeOnShelf(d2, d1, NeighbourSide::LEFT);
+    updateCanvasAndBlock();
 
     _ordering.push_back(d1);
     _ordering.push_back(d2);
 
     Gap g = Gap(new Disk(d1), new Disk(d2));
     _gapSizes.push(g);
-
-    updateCanvasAndBlock();
 
     _spanLength = d1.getRadius() + footpointDistance(d1, d2) + d2.getRadius();
 
@@ -126,32 +138,37 @@ void CoinsOnAShelf::pokreniAlgoritam()
             updateCanvasAndBlock();
         }
     }
-
-    qDebug() << _spanLength;
 }
 
 void CoinsOnAShelf::pokreniNaivniAlgoritam()
 {
 
     std::sort(std::begin(_disksNaive), std::end(_disksNaive), std::less<Disk>());
+    calculatePositions(_disksNaive);
+    updateCanvasAndBlock();
 
     int n = _disksNaive.size();
-    float currentMin = (float)INT_MAX;
+    _spanLengthNaive = (float)INT_MAX;
 
     do {
         float currentResult = _disksNaive.front().getRadius() + _disksNaive.back().getRadius();
+
+        organizeOnShelfNaive();
+        updateCanvasAndBlock();
 
         for (int i=0; i<n-1; ++i) {
             currentResult += footpointDistance(_disksNaive.at(i), _disksNaive.at(i+1));
         }
 
-        if(currentResult < currentMin)
-            currentMin = currentResult;
+        if(currentResult < _spanLengthNaive) {
+            _spanLengthNaive = currentResult;
+            _orderingNaive = _disksNaive;
+        }
 
     } while(std::next_permutation(std::begin(_disksNaive), std::end(_disksNaive)));
 
-    _spanLengthNaive = currentMin;
-    qDebug() << "Min result: " << _spanLengthNaive;
+    _disksNaive = _orderingNaive;
+    updateCanvasAndBlock();
 }
 
 void CoinsOnAShelf::crtajAlgoritam(QPainter *painter) const
@@ -160,22 +177,36 @@ void CoinsOnAShelf::crtajAlgoritam(QPainter *painter) const
         return;
 
     auto pen = painter->pen();
-    pen.setColor(Qt::blue);
+    pen.setColor(Qt::black);
     painter->setPen(pen);
 
-    painter->fillRect(SHELF_X, SHELF_Y, _pCrtanje->width()-20, SHELF_HEIGHT, Qt::blue);
+    painter->fillRect(0, SHELF_Y, _pCrtanje->width(), SHELF_HEIGHT, Qt::blue);
 
 
 
     for(const auto &disk : _disks) {
         painter->drawEllipse(QPointF(disk.getPosX(), disk.getPosY()), disk.getRadius(), disk.getRadius());
     }
-
-
-
 }
 
-void CoinsOnAShelf::crtajNaivniAlgoritam(QPainter*) const {}
+void CoinsOnAShelf::crtajNaivniAlgoritam(QPainter *painter) const
+{
+    if(!painter)
+        return;
+
+    auto pen = painter->pen();
+    pen.setColor(Qt::black);
+    painter->setPen(pen);
+
+    painter->fillRect(0, SHELF_Y, _pCrtanje->width(), SHELF_HEIGHT, Qt::blue);
+
+
+
+    for(const auto &disk : _disksNaive) {
+        qDebug() << "Printing disk pos x: " << disk.getPosX();
+        painter->drawEllipse(QPointF(disk.getPosX(), disk.getPosY()), disk.getRadius(), disk.getRadius());
+    }
+}
 
 
 std::deque<float> CoinsOnAShelf::generateRandomRadiuses(int numDisks) const
@@ -193,7 +224,7 @@ std::deque<float> CoinsOnAShelf::generateRandomRadiuses(int numDisks) const
     return radiuses;
 }
 
-void CoinsOnAShelf::calculatePositions()
+void CoinsOnAShelf::calculatePositions(std::deque<Disk>& disks)
 {
     int canvasWidth = _pCrtanje->width();
     int canvasHeight = _pCrtanje->height();
@@ -202,8 +233,9 @@ void CoinsOnAShelf::calculatePositions()
     float currentY = canvasHeight - 10.0;
     float currentMaxRadius = 0.0;
 
-    for(auto &disk : _disks)
+    for(auto& disk : disks)
     {
+
         if (currentX + 2*disk.getRadius() > canvasWidth) {
             currentY -= 2*currentMaxRadius + 10.0;
             currentX = 10.0;
@@ -228,6 +260,58 @@ void CoinsOnAShelf::placeOnShelf(Disk &disk, Disk &neighbour, NeighbourSide ns)
         disk.setPosX(neighbour.getPosX() - footpointDistance(disk, neighbour));
 
     disk.setPosY(SHELF_Y + SHELF_HEIGHT + disk.getRadius());
+
+}
+
+void CoinsOnAShelf::organizeOnShelfNaive()
+{
+    int n = _disksNaive.size();
+    int s = n / 2.0;
+    auto& middleDisk = _disksNaive.at(s);
+    qDebug() << "Middle disk:" << middleDisk.getId();
+    float shelfPos = SHELF_Y + SHELF_HEIGHT;
+
+    middleDisk.setPosX(_pCrtanje->width() / 2.0);
+    middleDisk.setPosY(shelfPos + middleDisk.getRadius());
+
+    float currentX = middleDisk.getPosX();
+    Disk neighbourDisk = middleDisk;
+    Disk previousDisk = _disksNaive.at(s - 1);
+
+    for (int i = s+1; i < n; ++i) {
+        auto& currentDisk = _disksNaive.at(i);
+
+        if (neighbourDisk.getSize() <= gapSize(previousDisk, currentDisk))
+             currentX = previousDisk.getPosX() + footpointDistance(previousDisk, currentDisk);
+
+        else
+            currentX += footpointDistance(neighbourDisk, currentDisk);
+
+        currentDisk.setPosX(currentX);
+        currentDisk.setPosY(shelfPos + currentDisk.getRadius());
+
+        previousDisk = neighbourDisk;
+        neighbourDisk = currentDisk;
+    }
+
+    currentX = middleDisk.getPosX();
+    neighbourDisk = middleDisk;
+    previousDisk = _disksNaive.at(s + 1);
+
+    for (int i = s-1; i >= 0; --i) {
+        auto& currentDisk = _disksNaive.at(i);
+
+        if (neighbourDisk.getSize() <= gapSize(previousDisk, currentDisk))
+            currentX = previousDisk.getPosX() - footpointDistance(previousDisk, currentDisk);
+        else
+            currentX -= footpointDistance(neighbourDisk, currentDisk);
+
+        currentDisk.setPosX(currentX);
+        currentDisk.setPosY(shelfPos + currentDisk.getRadius());
+
+        previousDisk = neighbourDisk;
+        neighbourDisk = currentDisk;
+    }
 
 }
 

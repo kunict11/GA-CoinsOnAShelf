@@ -19,8 +19,8 @@ public:
                   int brojTacaka = BROJ_SLUCAJNIH_OBJEKATA);
 
     // define the maximimum and minimum value for disk radius
-    constexpr static float MAX_RADIUS = 81.0;
-    constexpr static float MIN_RADIUS = 1;
+    constexpr static float MAX_RADIUS = 196.0;
+    constexpr static float MIN_RADIUS = 2.0;
 
     void pokreniAlgoritam();
     void crtajAlgoritam(QPainter *painter) const;
@@ -43,6 +43,7 @@ private:
     std::deque<Disk> _disksNaive;
 
     std::deque<Disk> _ordering;
+    std::deque<Disk> _orderingNaive;
     int _orderingSize;
     float _spanLength;
     float _spanLengthNaive;
@@ -51,12 +52,12 @@ private:
     float gapSize(const Disk &disk1, const Disk &disk2);
     bool canDiskFitInGap(Disk &disk, float gapSize);
     void reasignIds();
-    void calculatePositions();
+    void calculatePositions(std::deque<Disk>& disks);
     void placeOnShelf(Disk &disk, Disk &neighbour, NeighbourSide n);
+    void organizeOnShelfNaive();
 
     std::priority_queue<Gap> _gapSizes;
 
-    constexpr static int SHELF_X = 10;
     constexpr static int SHELF_Y = 50;
     constexpr static int SHELF_HEIGHT = 10;
 };
