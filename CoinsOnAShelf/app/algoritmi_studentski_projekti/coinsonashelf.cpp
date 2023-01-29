@@ -340,3 +340,18 @@ float CoinsOnAShelf::getSpanLengthNaive() const
 {
     return _spanLengthNaive;
 }
+
+int CoinsOnAShelf::getOrderingSize() const
+{
+    return _ordering.size();
+}
+
+int CoinsOnAShelf::getNumberOfDisks() const
+{
+    return _disks.size();
+}
+
+int CoinsOnAShelf::getNumberOfDisksNaive() const
+{
+    return _disksNaive.size();
+}

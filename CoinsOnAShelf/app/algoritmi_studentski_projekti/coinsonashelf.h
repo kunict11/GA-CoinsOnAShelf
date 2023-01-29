@@ -5,11 +5,11 @@
 #include <queue>
 #include <tuple>
 
-#include "algoritambaza.h"
+#include "../algoritambaza.h"
 #include "disk.h"
 #include "gap.h"
 
-// #define COINS_ON_A_SHELF_BENCHMARK
+#define COINS_ON_A_SHELF_BENCHMARK
 
 class CoinsOnAShelf : public AlgoritamBaza
 {
@@ -33,6 +33,8 @@ public:
     int getOrderingSize() const;
     float getSpanLength() const;
     float getSpanLengthNaive() const;
+    int getNumberOfDisks() const;
+    int getNumberOfDisksNaive() const;
 
 private:
     enum NeighbourSide

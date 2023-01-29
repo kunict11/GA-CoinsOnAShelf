@@ -3,7 +3,6 @@
 #include <QApplication>
 #include <GL/glut.h>
 #include <QLabel>
-#include "./algoritmi_studentski_projekti/coinsonashelf.h"
 
 int main(int argc, char *argv[])
 {
