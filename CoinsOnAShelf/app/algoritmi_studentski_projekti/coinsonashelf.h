@@ -9,7 +9,7 @@
 #include "disk.h"
 #include "gap.h"
 
-#define COINS_ON_A_SHELF_BENCHMARK
+//#define COINS_ON_A_SHELF_BENCHMARK
 
 class CoinsOnAShelf : public AlgoritamBaza
 {

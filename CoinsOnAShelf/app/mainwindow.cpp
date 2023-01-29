@@ -298,48 +298,6 @@ void MainWindow::napraviNoviAlgoritam()
        2D algoritmi crtaju po _pOblastCrtanja, a 3D po _pOblastCrtanjaOpenGL. */
     TipAlgoritma tipAlgoritma = static_cast<TipAlgoritma>(ui->tipAlgoritma->currentIndex());
     switch (tipAlgoritma) {
-    /*
-    case TipAlgoritma::DEMO_ISCRTAVANJA:
-        _pAlgoritamBaza = new DemoIscrtavanja(_pOblastCrtanja, _duzinaPauze, _naivni,
-                                              _imeDatoteke, _brojSlucajnihObjekata);
-        break;
-    case TipAlgoritma::BRISUCA_PRAVA:
-        _pAlgoritamBaza = new BrisucaPrava(_pOblastCrtanja, _duzinaPauze, _naivni,
-                                           _imeDatoteke, _brojSlucajnihObjekata);
-        break;
-    case TipAlgoritma::_3D_ISCRTAVANJE:
-        _pAlgoritamBaza = new Discrtavanje(_pOblastCrtanjaOpenGL, _duzinaPauze, _naivni,
-                                           _imeDatoteke, _brojSlucajnihObjekata);
-        break;
-    case TipAlgoritma::KONVEKSNI_OMOTAC:
-        _pAlgoritamBaza = new KonveksniOmotac(_pOblastCrtanja, _duzinaPauze, _naivni,
-                                              _imeDatoteke, _brojSlucajnihObjekata);
-        break;
-    case TipAlgoritma::KONVEKSNI_OMOTAC_3D:
-        _pAlgoritamBaza = new KonveksniOmotac3D(_pOblastCrtanjaOpenGL, _duzinaPauze, _naivni,
-                                                _imeDatoteke, _brojSlucajnihObjekata);
-        break;
-    case TipAlgoritma::PRESECI_DUZI:
-        _pAlgoritamBaza = new PreseciDuzi(_pOblastCrtanja, _duzinaPauze, _naivni,
-                                          _imeDatoteke, _brojSlucajnihObjekata);
-        break;
-    case TipAlgoritma::DCEL_DEMO:
-        _pAlgoritamBaza = new DCELDemo(_pOblastCrtanja, _duzinaPauze, _naivni,
-                                       _imeDatoteke, _brojSlucajnihObjekata);
-        break;
-    case TipAlgoritma::TRIANGULACIJA:
-        _pAlgoritamBaza = new Triangulation(_pOblastCrtanja, _duzinaPauze, _naivni,
-                                            _imeDatoteke, _brojSlucajnihObjekata);
-        break;
-    case TipAlgoritma::PRESEK_PRAVOUGAONIKA:
-        _pAlgoritamBaza = new PresekPravougaonika(_pOblastCrtanja, _duzinaPauze, _naivni,
-                                                  _imeDatoteke, _brojSlucajnihObjekata);
-        break;
-    case TipAlgoritma::DELONE_TRIANGULACIJA:
-        _pAlgoritamBaza = new Delone(_pOblastCrtanja, _duzinaPauze, _naivni,
-                                     _imeDatoteke, _brojSlucajnihObjekata);
-        break;
-    */
 
     case TipAlgoritma::COINS_ON_A_SHELF:
         _pAlgoritamBaza = new CoinsOnAShelf(_pOblastCrtanja, _duzinaPauze, _naivni,

@@ -8,18 +8,6 @@
 #include "config.h"
 #include "timemeasurementthread.h"
 
-/* Ovde ukljuciti zaglavlja novih algoritma. */
-//#include "./algoritmi_sa_vezbi/ga00_demoiscrtavanja.h"
-//#include "./algoritmi_sa_vezbi/ga01_brisucaprava.h"
-//#include "./algoritmi_sa_vezbi/ga02_3discrtavanje.h"
-//#include "./algoritmi_sa_vezbi/ga03_konveksniomotac.h"
-//#include "./algoritmi_sa_vezbi/ga04_konveksniomotac3d.h"
-//#include "./algoritmi_sa_vezbi/ga05_preseciduzi.h"
-//#include "./algoritmi_sa_vezbi/ga06_dceldemo.h"
-//#include "./algoritmi_sa_vezbi/ga07_triangulation.h"
-//#include "./algoritmi_sa_vezbi/ga08_delaunay_triangulation.h"
-//#include "ga06_presekPravougaonika.h"
-
 #include "./algoritmi_studentski_projekti/coinsonashelf.h"
 
 /* Enumeracija algoritama */
