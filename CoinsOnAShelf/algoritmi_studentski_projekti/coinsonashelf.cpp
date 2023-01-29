@@ -290,52 +290,22 @@ void CoinsOnAShelf::placeOnShelf(Disk &disk, Disk &neighbour, NeighbourSide ns)
 
 void CoinsOnAShelf::organizeOnShelfNaive()
 {
+    float currentX = 60 + _disksNaive.at(0).getRadius();
+    float posShelfY = SHELF_Y + SHELF_HEIGHT;
     int n = _disksNaive.size();
-    int s = n / 2.0;
-    auto& middleDisk = _disksNaive.at(s);
-    qDebug() << "Middle disk:" << middleDisk.getId();
-    float shelfPos = SHELF_Y + SHELF_HEIGHT;
 
-    middleDisk.setPosX(_pCrtanje->width() / 2.0);
-    middleDisk.setPosY(shelfPos + middleDisk.getRadius());
+    _disksNaive.at(0).setPosX(currentX);
+    _disksNaive.at(0).setPosY(posShelfY + _disksNaive.at(0).getRadius());
 
-    float currentX = middleDisk.getPosX();
-    Disk neighbourDisk = middleDisk;
-    Disk previousDisk = _disksNaive.at(s - 1);
+    for(int i=1; i < n; ++i) {
+        auto& disk = _disksNaive.at(i);
+        auto previous = _disksNaive.at(i-1);
+        currentX += footpointDistance(previous, disk);
 
-    for (int i = s+1; i < n; ++i) {
-        auto& currentDisk = _disksNaive.at(i);
+        disk.setPosX(currentX);
+        disk.setPosY(posShelfY + disk.getRadius());
 
-        if (neighbourDisk.getSize() <= gapSize(previousDisk, currentDisk))
-             currentX = previousDisk.getPosX() + footpointDistance(previousDisk, currentDisk);
-
-        else
-            currentX += footpointDistance(neighbourDisk, currentDisk);
-
-        currentDisk.setPosX(currentX);
-        currentDisk.setPosY(shelfPos + currentDisk.getRadius());
-
-        previousDisk = neighbourDisk;
-        neighbourDisk = currentDisk;
-    }
-
-    currentX = middleDisk.getPosX();
-    neighbourDisk = middleDisk;
-    previousDisk = _disksNaive.at(s + 1);
-
-    for (int i = s-1; i >= 0; --i) {
-        auto& currentDisk = _disksNaive.at(i);
-
-        if (neighbourDisk.getSize() <= gapSize(previousDisk, currentDisk))
-            currentX = previousDisk.getPosX() - footpointDistance(previousDisk, currentDisk);
-        else
-            currentX -= footpointDistance(neighbourDisk, currentDisk);
-
-        currentDisk.setPosX(currentX);
-        currentDisk.setPosY(shelfPos + currentDisk.getRadius());
-
-        previousDisk = neighbourDisk;
-        neighbourDisk = currentDisk;
+        previous = disk;
     }
 
 }
